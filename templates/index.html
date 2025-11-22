@@ -4,15 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Strength Checker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
-        <h2>Password Strength Checker</h2>
+        <h1>Password Strength Checker</h1>
+
         <input type="password" id="password" placeholder="Enter your password">
-        <button onclick="checkPassword()">Check Strength</button>
-        <p id="result"></p>
+
+        <div class="meter-bg">
+            <div id="meter"></div>
+        </div>
+
+        <p id="label">Enter a password to check strength</p>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

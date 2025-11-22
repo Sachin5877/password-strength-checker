@@ -3,36 +3,35 @@ import re
 
 app = Flask(__name__)
 
-def check_strength(pw):
+def strength_score(p):
     score = 0
-    if len(pw) >= 8:
-        score += 1
-    if re.search(r"[A-Z]", pw):
-        score += 1
-    if re.search(r"[a-z]", pw):
-        score += 1
-    if re.search(r"\d", pw):
-        score += 1
-    if re.search(r"[@$!%*?&#]", pw):
-        score += 1
+    score += len(p) >= 10
+    score += bool(re.search(r"[A-Z]", p))
+    score += bool(re.search(r"[a-z]", p))
+    score += bool(re.search(r"\d", p))
+    score += bool(re.search(r"[!@#$%^&*(),.?\":{}|<>]", p))
+    return score
 
-    if score <= 2:
-        return "Weak 🔴"
-    elif score == 3 or score == 4:
-        return "Medium 🟡"
-    else:
-        return "Strong 🟢"
+def strength_label(score):
+    return {
+        0: ("Very Weak", "red"),
+        1: ("Weak", "red"),
+        2: ("Fair", "orange"),
+        3: ("Good", "gold"),
+        4: ("Strong", "lightgreen"),
+        5: ("Excellent", "green")
+    }.get(score, ("Unknown", "grey"))
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-@app.route('/check', methods=['POST'])
+@app.route("/check", methods=["POST"])
 def check():
-    data = request.get_json()
-    pw = data.get('password', '')
-    result = check_strength(pw)
-    return jsonify({'strength': result})
+    pw = request.json.get("password", "")
+    score = strength_score(pw)
+    label, color = strength_label(score)
+    return jsonify({"label": label, "color": color, "score": score})
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
